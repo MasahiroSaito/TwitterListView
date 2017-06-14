@@ -6,6 +6,6 @@ import retrofit2.http.Query
 import rx.Observable
 
 interface MyListStatusesClient {
-    @GET
+    @GET("lists/statuses.json")
     fun getMyListStatues(@Query("list_id") listId: Long) : Observable<List<MyListStatus>>
 }
