@@ -8,6 +8,10 @@ import android.util.Log
 import android.widget.ListView
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.masahirosaito.twitterlistview.Value.accessToken
+import com.masahirosaito.twitterlistview.Value.accessTokenSecret
+import com.masahirosaito.twitterlistview.Value.consumerKey
+import com.masahirosaito.twitterlistview.Value.consumerSecret
 import com.masahirosaito.twitterlistview.adapter.MyListStatusAdapter
 import com.masahirosaito.twitterlistview.client.MyListStatusesClient
 import com.masahirosaito.twitterlistview.model.MyList
@@ -47,8 +51,8 @@ class MyListStatusActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val consumer = OkHttpOAuthConsumer(Value.consumerKey, Value.consumerSecret).apply {
-            setTokenWithSecret(Value.accessToken, Value.accessTokenSecret)
+        val consumer = OkHttpOAuthConsumer(consumerKey, consumerSecret).apply {
+            setTokenWithSecret(accessToken, accessTokenSecret)
         }
 
         val logging = HttpLoggingInterceptor().apply {
