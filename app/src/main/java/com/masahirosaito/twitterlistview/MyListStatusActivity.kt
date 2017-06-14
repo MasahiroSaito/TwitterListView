@@ -1,5 +1,7 @@
 package com.masahirosaito.twitterlistview
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -10,8 +12,9 @@ import com.masahirosaito.twitterlistview.Value.accessToken
 import com.masahirosaito.twitterlistview.Value.accessTokenSecret
 import com.masahirosaito.twitterlistview.Value.consumerKey
 import com.masahirosaito.twitterlistview.Value.consumerSecret
-import com.masahirosaito.twitterlistview.adapter.MyListAdapter
-import com.masahirosaito.twitterlistview.client.MyListClient
+import com.masahirosaito.twitterlistview.adapter.MyListStatusAdapter
+import com.masahirosaito.twitterlistview.client.MyListStatusesClient
+import com.masahirosaito.twitterlistview.model.MyList
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -22,22 +25,26 @@ import rx.schedulers.Schedulers
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 import se.akerfeldt.okhttp.signpost.SigningInterceptor
 
-class MainActivity : AppCompatActivity() {
+class MyListStatusActivity : AppCompatActivity() {
 
-    val myListAdapter: MyListAdapter by lazy {
-        MyListAdapter(applicationContext)
+    val myListStatusAdapter: MyListStatusAdapter by lazy {
+        MyListStatusAdapter(applicationContext)
+    }
+
+    companion object {
+        private const val MY_LIST_EXTRA = "my_list"
+
+        fun intent(context: Context, myList: MyList): Intent =
+                Intent(context, MyListStatusActivity::class.java)
+                        .putExtra(MY_LIST_EXTRA, myList)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_my_list_status)
 
-        val listView = (findViewById(R.id.list_view) as ListView).apply {
-            adapter = myListAdapter
-        }
-
-        listView.setOnItemClickListener { _, _, position, _ ->
-            startActivity(MyListStatusActivity.intent(this, myListAdapter.myLists[position]))
+        (findViewById(R.id.my_list_status_view) as ListView).apply {
+            adapter = myListStatusAdapter
         }
     }
 
@@ -61,24 +68,25 @@ class MainActivity : AppCompatActivity() {
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create()
 
-        val retrofit = Retrofit.Builder()
+        Retrofit.Builder()
                 .baseUrl("https://api.twitter.com/1.1/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
+                .create(MyListStatusesClient::class.java).run {
 
-        val myListClient = retrofit.create(MyListClient::class.java)
-
-        myListClient.getMyLists()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    Log.i("list", it.toString())
-                    myListAdapter.myLists = it
-                    myListAdapter.notifyDataSetChanged()
-                }, {
-                    toast("エラー: $it")
-                })
+            getMyListStatues(intent.getParcelableExtra<MyList>(MY_LIST_EXTRA).id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        myListStatusAdapter.myListStatuses = it
+                        myListStatusAdapter.notifyDataSetChanged()
+                    }, {
+                        toast("ERROR: $it")
+                        Log.d("MyListStatus", it.message)
+                        it.printStackTrace()
+                    })
+        }
     }
 }

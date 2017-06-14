@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TwitterListView</string>
+    <string name="twitter_user_icon">twitter user icon</string>
 </resources>
