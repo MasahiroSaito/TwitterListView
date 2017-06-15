@@ -17,10 +17,9 @@ class MyListStatusAdapter(private val context: Context) : BaseAdapter() {
 
     override fun getItemId(position: Int): Long = 0
 
-    override fun getView(position: Int,
-                         convertView: View?,
-                         parent: ViewGroup?): View =
-            ((convertView as? MyListStatusView) ?: MyListStatusView(context)).apply {
-                setMyListStatus(myListStatuses[position])
-            }
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        return ((convertView as? MyListStatusView) ?: MyListStatusView(context)).apply {
+            setMyListStatus(myListStatuses[position])
+        }
+    }
 }

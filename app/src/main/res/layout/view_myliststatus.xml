@@ -36,4 +36,17 @@
         app:layout_constraintTop_toBottomOf="@id/user_name"
         tools:text="Tweet" />
 
+    <ImageView
+        android:id="@+id/media_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/twitter_user_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/user_icon"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        app:srcCompat="@color/colorPrimaryDark" />
+
 </android.support.constraint.ConstraintLayout>

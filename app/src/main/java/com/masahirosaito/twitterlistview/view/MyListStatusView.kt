@@ -25,6 +25,7 @@ class MyListStatusView : ConstraintLayout {
     val userIconImageView: ImageView by bindView(R.id.user_icon)
     val userNameTextView: TextView by bindView(R.id.user_name)
     val textTextView: TextView by bindView(R.id.text)
+    val mediaImageView: ImageView by bindView(R.id.media_image)
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_myliststatus, this)
@@ -34,5 +35,13 @@ class MyListStatusView : ConstraintLayout {
         userNameTextView.text = myListStatus.user.name
         textTextView.text = myListStatus.text
         Glide.with(context).load(myListStatus.user.profile_image_url).into(userIconImageView)
+
+        val medias = myListStatus.entities.media
+
+        if (medias.isNotEmpty()) {
+            if (medias.first().type == "photo") {
+                Glide.with(context).load(medias.first().media_url).into(mediaImageView)
+            }
+        }
     }
 }
