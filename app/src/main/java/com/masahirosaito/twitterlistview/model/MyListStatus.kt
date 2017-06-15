@@ -3,22 +3,20 @@ package com.masahirosaito.twitterlistview.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class MyListStatus(val created_at: String,
-                        val id: Long,
-                        val id_str: String,
+data class MyListStatus(val id: Long,
                         val text: String,
-                        val user: User) : Parcelable {
+                        val user: User,
+                        val entities: Entities) : Parcelable {
 
     companion object {
         @JvmField
         val CREATOR: Parcelable.Creator<MyListStatus> = object : Parcelable.Creator<MyListStatus> {
             override fun createFromParcel(source: Parcel): MyListStatus = source.run {
                 MyListStatus(
-                        readString(),
                         readLong(),
                         readString(),
-                        readString(),
-                        readParcelable(User::class.java.classLoader)
+                        readParcelable(User::class.java.classLoader),
+                        readParcelable(Entities::class.java.classLoader)
                 )
             }
             override fun newArray(size: Int): Array<MyListStatus?> = arrayOfNulls(size)
@@ -29,11 +27,10 @@ data class MyListStatus(val created_at: String,
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.run {
-            writeString(created_at)
             writeLong(id)
-            writeString(id_str)
             writeString(text)
             writeParcelable(user, flags)
+            writeParcelable(entities, flags)
         }
     }
 }
